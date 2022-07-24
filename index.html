@@ -12,25 +12,46 @@
         <script type="module">
 
         import * as THREE from './build/three.module.js';
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-            camera.position.z = 4;
-            
-            const geometry = new THREE.BoxGeometry(0.01,0.01,0.01);
+        import * as MathUtils from './build/MathUtils.js';
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        camera.position.z = 4;
+
+        function createCube (size, x, y, z) { //size has to be smaller than 1
+            const geometry = new THREE.BoxGeometry(size, size, size);
             const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
             const cube = new THREE.Mesh(geometry, material);
+            cube.position.x = x;
+            cube.position.y = y;
+            cube.position.z = z;
             scene.add(cube);
+        }
 
-            const renderer = new THREE.WebGLRenderer();
+        //get random coordinates within a big cube
+        for (let i = 0; i < 1000; i++){
+            let randomX = MathUtils.randFloat(-1,1);
+            let randomY = MathUtils.randFloat(-1,1);
+            let z = MathUtils.randFloat(-1,1);
+            createCube(0.01, randomX, randomY, z);
+        }
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        window.onresize = function () {
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+
             renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
+        }
 
-            function animate() {
-                requestAnimationFrame(animate);
-                renderer.render(scene, camera);
-            }
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
 
-            animate();
+        animate();
         </script>
     </body>
 </html>
